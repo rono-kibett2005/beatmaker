@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BeatMaker: make full songs on your phone, offline</title>
+<meta name="description" content="BeatMaker is a free Android beat maker. Drums, melody, your own sounds, vocals and export, all offline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f1fb; --ink:#1d2433; --muted:#4d5870; --panel:#ffffff; --line:#d9d5ee;
+  --accent:#c25e00; --accent-ink:#ffffff; --off1:#c9d0dc; --off2:#dfe3ec; --on:#ff9800; --head:#5c6bc0;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#161c28; --ink:#eef0f7; --muted:#a9b1c6; --panel:#1f2736; --line:#323c52;
+    --accent:#ff9800; --accent-ink:#1a1200; --off1:#455a64; --off2:#2f3e46;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161c28; --ink:#eef0f7; --muted:#a9b1c6; --panel:#1f2736; --line:#323c52;
+  --accent:#ff9800; --accent-ink:#1a1200; --off1:#455a64; --off2:#2f3e46;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;line-height:1.05;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--head);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 0}
+.brand{font:800 1.25rem "Bricolage Grotesque",sans-serif;text-decoration:none}
+header.top a.small{font-weight:600;text-decoration:none;border-bottom:2px solid var(--accent)}
+.hero{padding:2.5rem 0 3.5rem}
+.hero h1{font-size:clamp(2.6rem,8vw,5.2rem);font-weight:800;letter-spacing:-.02em;max-width:12ch}
+.hero p.lead{font-size:1.2rem;color:var(--muted);max-width:34rem;margin:1.2rem 0 1.8rem}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-weight:600;padding:.95rem 1.6rem;border-radius:999px;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);margin-left:.5rem}
+.note{color:var(--muted);font-size:.95rem;margin-top:.9rem}
+.seq{margin-top:2.5rem;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:1rem}
+.seq .row{display:grid;grid-template-columns:4.5rem repeat(16,1fr);gap:4px;align-items:center;margin-bottom:4px}
+.seq .name{font-weight:600;font-size:.85rem;color:var(--muted)}
+.cell{aspect-ratio:1/1.35;border:0;padding:0;border-radius:5px;background:var(--off1);cursor:pointer}
+.cell:nth-child(n+routine){}
+.row .cell:nth-child(8n+6),.row .cell:nth-child(8n+7),.row .cell:nth-child(8n+8),.row .cell:nth-child(8n+9){background:var(--off2)}
+.cell.on{background:var(--on)}
+.cell.now{outline:2px solid var(--head);outline-offset:-2px}
+.seq .hint{margin:.7rem 0 0;color:var(--muted);font-size:.9rem}
+section{padding:3rem 0;border-top:1px solid var(--line)}
+section h2{font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;margin-bottom:1.5rem}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2rem 2.5rem}
+.feat h3{font-size:1.25rem;font-weight:600;margin-bottom:.35rem}
+.feat p{margin:0;color:var(--muted)}
+ol.steps{margin:0;padding-left:1.4rem;max-width:42rem}
+ol.steps li{margin-bottom:.8rem}
+details{border-top:1px solid var(--line);padding:1rem 0;max-width:46rem}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{font-weight:600;cursor:pointer}
+details p{color:var(--muted);margin:.6rem 0 0}
+footer{padding:2.5rem 0 3rem;border-top:1px solid var(--line);color:var(--muted);font-size:.95rem}
+@media (max-width:640px){
+  .seq .row{grid-template-columns:3.2rem repeat(16,1fr);gap:2px}
+  .seq .name{font-size:.7rem}
+  .btn.ghost{margin:.6rem 0 0}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#">BeatMaker</a>
+    <a class="small" href="BeatMaker.apk" download>Download</a>
+  </header>
+
+  <div class="hero">
+    <h1>Build a whole song on your phone.</h1>
+    <p class="lead">Program drums, play a melody, add your own sounds, sing over it, and export the finished track. It all works without internet.</p>
+    <a class="btn" href="BeatMaker.apk" download>Download for Android</a>
+    <a class="btn ghost" href="#install">How to install</a>
+    <p class="note">Free. Needs Android 8.0 or newer.</p>
+
+    <div class="seq" aria-label="Try the step sequencer">
+      <div id="grid"></div>
+      <p class="hint">Tap the squares to make a beat. Press space or tap Play to hear how the playhead moves.
+        <button id="play" class="btn" style="padding:.4rem 1rem;margin-left:.5rem;border:0;font:inherit;font-weight:600;cursor:pointer">Play</button></p>
+    </div>
+  </div>
+
+  <section id="features">
+    <h2>Everything you need for one track</h2>
+    <div class="feat">
+      <div><h3>Drums and mixer</h3><p>Kick, snare, hats, claps and more. Set volume, mute or solo on every row.</p></div>
+      <div><h3>Melody with six instruments</h3><p>Draw notes on the piano roll. Pick synth, flute, piano, pluck, bass or bell.</p></div>
+      <div><h3>Your own sounds</h3><p>Bring in any audio file. Change its pitch, shorten it or play it backwards.</p></div>
+      <div><h3>Record vocals</h3><p>Sing or rap over your beat. Auto beat can even build a beat around your singing.</p></div>
+      <div><h3>32 steps and swing</h3><p>Make the second half of a pattern different, and add a looser groove.</p></div>
+      <div><h3>Songs and export</h3><p>Chain saved patterns into a song, then save or share it as a WAV file.</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>Install in four steps</h2>
+    <ol class="steps">
+      <li>Tap <strong>Download for Android</strong> on your phone.</li>
+      <li>Open the downloaded <strong>BeatMaker.apk</strong> file.</li>
+      <li>If Android asks, allow installs from your browser or Files app.</li>
+      <li>Open BeatMaker and tap a pad.</li>
+    </ol>
+  </section>
+
+  <section id="faq">
+    <h2>Questions</h2>
+    <details><summary>Does it need internet?</summary><p>No. Every sound is built into the app or stored on your phone.</p></details>
+    <details><summary>Where are my exported songs?</summary><p>In your phone's Music folder, inside a folder called BeatMaker.</p></details>
+    <details><summary>Why does Android warn me before installing?</summary><p>The app is installed from this site instead of the Play Store, so Android asks you to confirm.</p></details>
+  </section>
+
+  <footer>BeatMaker. Made with Android Studio.</footer>
+</div>
+
+<script>
+(function(){
+  var names=["Kick","Snare","Hat","Clap"];
+  var pattern=["x...x...x...x...","....x.......x...","x.x.x.x.x.x.x.x.","....x.......x..."];
+  var grid=document.getElementById("grid"), rows=[], timer=null, step=-1;
+  names.forEach(function(n,r){
+    var row=document.createElement("div"); row.className="row";
+    var lab=document.createElement("span"); lab.className="name"; lab.textContent=n; row.appendChild(lab);
+    var cells=[];
+    for(var s=0;s<16;s++){
+      var c=document.createElement("button"); c.className="cell"+(pattern[r][s]==="x"?" on":"");
+      c.setAttribute("aria-label",n+" step "+(s+1));
+      c.addEventListener("click",function(e){e.currentTarget.classList.toggle("on")});
+      row.appendChild(c); cells.push(c);
+    }
+    grid.appendChild(row); rows.push(cells);
+  });
+  var ctx=null;
+  function tick(r){
+    if(!ctx) return;
+    var t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
+    var f=[110,220,6000,1500][r];
+    o.type=r===2?"square":"sine"; o.frequency.setValueAtTime(f,t);
+    if(r===0) o.frequency.exponentialRampToValueAtTime(40,t+.12);
+    g.gain.setValueAtTime(r===2?.04:.3,t); g.gain.exponentialRampToValueAtTime(.001,t+(r===2?.05:.15));
+    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+.2);
+  }
+  function advance(){
+    if(step>=0) rows.forEach(function(r){r[step].classList.remove("now")});
+    step=(step+1)%16;
+    rows.forEach(function(cells,r){cells[step].classList.add("now"); if(cells[step].classList.contains("on")) tick(r)});
+  }
+  var btn=document.getElementById("play");
+  function toggle(){
+    if(timer){clearInterval(timer);timer=null;btn.textContent="Play";
+      rows.forEach(function(r){r.forEach(function(c){c.classList.remove("now")})});step=-1;return}
+    try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
+    timer=setInterval(advance,125); btn.textContent="Stop";
+  }
+  btn.addEventListener("click",toggle);
+  document.addEventListener("keydown",function(e){
+    if(e.code==="Space"&&document.activeElement.tagName!=="BUTTON"){e.preventDefault();toggle()}
+  });
+})();
+</script>
+</body>
+</html>
